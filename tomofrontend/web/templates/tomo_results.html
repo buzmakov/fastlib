@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}Результаты реконструкции{% endblock %}
+{% block body %}
+    <div class="container">
+        <header class="jumbotron subhead" id="overview">
+
+            <p class="lead">
+                Результат реконструкции объекта {{ tomo_object['data_dir'] }}
+            </p>
+
+            <div class="subnav subnav-fixed">
+                <ul class="nav nav-pills">
+                    <li >
+                        <a href="{{ url_for('tomo_info',tomo_object_id=tomo_object['id']) }}">
+                            Информация об объекте
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{{ url_for('tomo_process',tomo_object_id=tomo_object['id']) }}"> Процесс реконструкции  </a>
+                    </li>
+
+                    <li class="active">
+                        <a href="#">
+                            Результат реконструкции
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+        </header>
+
+        <div class="span12">
+            <ul id="myTab" class="nav nav-tabs">
+                <li class="active"><a href="#files" data-toggle="tab">Get files</a></li>
+                <li><a href="#images_x" data-toggle="tab">Images X</a></li>
+                <li><a href="#images_y" data-toggle="tab">Images Y</a></li>
+                <li><a href="#images_z" data-toggle="tab">Images Z</a></li>
+
+            </ul>
+
+            <div id="myTabContent" class="tab-content">
+                <div class="tab-pane fade in active" id="files">
+                    <div>
+                        <label> Получить файлы</label>
+                        <ul>
+                            <li>
+                                <a href="{{ url_for('get_result_file', tomo_object_id= tomo_object['id']) }}?fname=reconstruction/postproc_data.h5">
+                                    HDF5 файл с  предобработанными данными
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ url_for('get_result_file', tomo_object_id= tomo_object['id']) }}?fname=reconstruction/result.hdf5">
+                                    HDF5 файл с результатом
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ url_for('get_result_file', tomo_object_id= tomo_object['id']) }}?fname=reconstruction/amira.raw">
+                                    Бинарный файл AMIRA
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ url_for('get_result_file', tomo_object_id= tomo_object['id']) }}?fname=reconstruction/tomo.hx">
+                                    HX файл AMIRA
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="images_x">
+                    <div class="row">
+                        {% for f in tomo_object.get_files_list('reconstruction/images/x_*.png') %}
+                        <div class="span6">
+                            <h3>{{ f }}</h3>
+                            <img src="{{ url_for('get_result_file', tomo_object_id= tomo_object['id']) }}?fname={{ f }}"/>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="images_y">
+                    <div class="row">
+                        {% for f in tomo_object.get_files_list('reconstruction/images/y_*.png') %}
+                            <div class="span6">
+                                <h3>{{ f }}</h3>
+                                <img src="{{ url_for('get_result_file', tomo_object_id= tomo_object['id']) }}?fname={{ f }}"/>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="images_z">
+                    <div class="row">
+                        {% for f in tomo_object.get_files_list('reconstruction/images/z_*.png') %}
+                            <div class="span6">
+                                <h3>{{ f }}</h3>
+                                <img src="{{ url_for('get_result_file', tomo_object_id= tomo_object['id']) }}?fname={{ f }}"/>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock%}
+
+{% block my_scripts %}
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Информация об объекте{% endblock %}
+{% block body %}
+
+<div class="container">
+    <header class="jumbotron subhead" id="overview">
+
+        <p class="lead">
+            Информация об объекте {{ tomo_object['data_dir'] }}
+        </p>
+
+        <div class="subnav subnav-fixed">
+            <ul class="nav nav-pills">
+                <li class=active><a href="#">Информация об объекте</a></li>
+                <li>
+                    <a href="{{ url_for('tomo_process',tomo_object_id=tomo_object['id']) }}">
+                        Процесс реконструкции
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('tomo_result',tomo_object_id=tomo_object['id']) }}">
+                        Результат реконструкции
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="span8">
+        <dl class="dl">
+
+            <dt> Object ID: </dt>
+            <dd> {{ tomo_object['id'] }}</dd>
+
+            <dt> Object Path:</dt>
+            <dd> {{ tomo_object['data_dir'] }}</dd>
+
+            <dt> Object Profile:</dt>
+            <dd>{{ tomo_object['config']['profile'] }}</dd>
+
+            <dt>Object status:</dt>
+            <dd>{{ tomo_object['status'][-1]['message'] }}</dd>
+
+            <dt> Детальный статус объекта</dt>
+            <dd>
+                <pre class="pre">{{tomo_object.get_formated_status()}}</pre>
+            </dd>
+
+            <dt>Tomo config:
+                <button class="btn-mini btn-primary" data-toggle="collapse" data-target="#tomo_config">
+                    Hide/Show
+                </button>
+            </dt>
+            <dd>
+                <div id="tomo_config" class="collapse in">
+                    <pre class="pre">{{ tomo_object.get_formated_config()}}</pre>
+                </div>
+            </dd>
+        </dl>
+    </div>
+</div>
+{% endblock%}
+
+{% block my_scripts %} {% endblock %}

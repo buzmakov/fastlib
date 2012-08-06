@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block title %}Информация об объекте{% endblock %}
+{% block body %}
+<div class="container">
+    <header class="jumbotron subhead" id="overview">
+
+        <p class="lead">
+            Индикация процесса реконструкции объекта {{ tomo_object['data_dir'] }}
+        </p>
+
+        <div class="subnav subnav-fixed">
+            <ul class="nav nav-pills">
+                <li >
+                    <a href="{{ url_for('tomo_info',tomo_object_id=tomo_object['id']) }}">
+                        Информация об объекте
+                    </a>
+                </li>
+
+                <li class=active>
+                    <a href="#"> Процесс реконструкции  </a>
+                </li>
+
+                <li>
+                    <a href="{{ url_for('tomo_result',tomo_object_id=tomo_object['id']) }}">
+                        Результат реконструкции
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+    </header>
+
+    <div class="span12">
+        <div class="row-fluid"  style="margin-bottom: 9px">
+            <div class="span6">
+                <button class="btn btn-primary" id="start_reconstruction">
+                    Добавить объект в очередь на восстановление
+                </button>
+            </div>
+
+            <div class="span6">
+                <button class="btn btn-primary" id="start_preprocess">
+                    Добавить объект в очередь на предобработку изображений
+                </button>
+            </div>
+        </div>
+
+        <div class="row-fluid" style="margin-bottom: 9px">
+            <div class="span12" id="config_div" style="display: block;" >
+                <pre class="pre-scrollable" id="log_text">{{ tomo_object.get_log() }}</pre>
+            </div>
+
+            <div class="span12">
+                <button class="btn btn-primary" id="get_log">Обновить лог</button>
+            </div>
+        </div>
+
+        <div class="row-fluid">
+            <div class="span12" style="margin-bottom: 9px">
+                <button class="btn btn-primary" data-toggle="collapse" data-target="#u_images_div">
+                    Показать/спрятать юстировочные изображения
+                </button>
+            </div>
+
+            <div class="collapse in" id="u_images_div" style="border: 2px solid black">
+                <img src="{{ url_for('get_result_file', tomo_object_id= tomo_object['id']) }}?fname=reconstruction/shifting_pic.png">
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock%}
+
+{% block my_scripts %}
+    <script>
+        function update_log() {
+            $.getJSON("{{ url_for('tomo_log',tomo_object_id=tomo_object['id']) }}",
+                    {}, function(data) {
+                        $("#log_text").text(data.log);
+                        $("#log_text")[0].scrollTop= $("#log_text")[0].scrollHeight;
+                    });
+            return false;
+        }
+
+        $(function() {
+            $('#get_log').bind('click',
+                    function() {
+                        $.getJSON("{{ url_for('tomo_log',tomo_object_id=tomo_object['id']) }}",
+                                {}, function(data) {
+                                    $("#log_text").text(data.log);
+                                    $("#log_text")[0].scrollTop= $("#log_text")[0].scrollHeight;
+                                });
+                        return false;
+                    });
+        });
+
+        $(function() {
+            $('#start_reconstruction').bind('click',
+                    function() {
+                        $.getJSON(
+                                "{{ url_for('tomo_reconstruct',tomo_object_id=tomo_object['id']) }}",
+                                {},
+                                {}
+                        );
+                        return false;
+                    });
+        });
+
+        $(function() {
+            $('#start_preprocess').bind('click',
+                    function() {
+                        $.getJSON(
+                                "{{ url_for('tomo_reconstruct',tomo_object_id=tomo_object['id']) }}",
+                                {just_preprocess:'True'},
+                                {}
+                        );
+                        return false;
+                    });
+        });
+        setInterval( "update_log()", 5000 );
+
+    </script>
+{% endblock %}

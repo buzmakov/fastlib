@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Стартовая страница {% endblock %}
+{% block body %}
+    <div class="container">
+
+        <div class="hero-unit">
+            <h1>Что это такое? </h1>
+            <p>
+               Это система хранения и обработки экспериментальных данных лабораторной рентгеновской микротомографии.
+            </p>
+        </div>
+
+        <div class="row">
+            <div class="span4">
+                <h2>Начало работы.</h2>
+                <p>
+                    В этом разделе можно посмотреть на список объектов.
+                </p>
+                <p>
+                    Можно запустить реконструкцию и посмотреть на полученный результат.
+                </p>
+                <p><a class="btn btn-primary" href="{{url_for('tomo_experiments')}}">Начать работу &raquo;</a></p>
+            </div>
+
+            <div class="span4">
+                <h2>Помощь</h2>
+                <p>
+                    Сюда нужно добавить раздел о помощи. Пока тут ничего нет.
+                </p>
+                <p><a class="btn btn-info" href="#">Помощь &raquo;</a></p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
