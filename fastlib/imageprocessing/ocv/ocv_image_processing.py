@@ -19,7 +19,7 @@ def cv_rotate(x,angle):
     :param angle: angle in degrees
     :return: rotated array
     """
-    x_center=tuple(numpy.array(x.shape)/2.0-0.5)
+    x_center=tuple(numpy.array((x.shape[1],x.shape[0]),dtype='float32')/2.0-0.5)
     rot_mat=cv2.getRotationMatrix2D(x_center,angle,1.0)
     xro=cv2.warpAffine(x,rot_mat,(x.shape[1],x.shape[0]),flags=cv2.INTER_LINEAR)
     return xro
