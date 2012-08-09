@@ -36,17 +36,21 @@ task void backproject_task(uniform float array_in[], uniform float array_out[],u
             };
     }
 }
+
 export void backproject(uniform float array_in[], uniform float array_out[],uniform int count){
     foreach (i = 0 ... count, j= 0 ... count){
         array_out[i*count+j]=array_in[i];
     }
 }
+
 export void backproject_mt(uniform float array_in[], uniform float array_out[],uniform int count){
     launch[8] backproject_task(array_in, array_out,count);
     sync;
 }
-/*
-export void rotate_image(uniform float data[], uniform float res[], uniform float angle, uniform int im_size){
+
+
+void rotate_one_image(uniform float data[], uniform float res[],
+            uniform float angle, uniform int im_size){
     uniform float alpha = angle/57.29577951308232;
     uniform float sa,ca;
     sincos(alpha,&sa,&ca);
@@ -79,7 +83,25 @@ export void rotate_image(uniform float data[], uniform float res[], uniform floa
     }
     delete[] tmp;
 }
-*/
+
+task void rotate_subvolume(uniform float array_in[], uniform float array_out[],
+                        uniform float angle, uniform int im_size,  uniform int slices_count){
+    uniform int delta_slice=(slices_count+taskCount-1)/taskCount;
+    uniform int slice_start= taskIndex*delta_slice;
+    uniform int slice_stop= min(slices_count,slice_start+delta_slice);
+    uniform int stride=im_size*im_size;
+
+    for(uniform int slice= slice_start;slice < slice_stop;slice++){
+        rotate_one_image(&array_in[stride*slice],&array_out[stride*slice],angle,im_size);
+    }
+}
+
+export void rotate_volume(uniform float array_in[], uniform float array_out[],
+                        uniform float angle, uniform int im_size,  uniform int slices_count) {
+    launch[16] rotate_subvolume(array_in, array_out, angle, im_size, slices_count);
+    sync;
+}
+
 task void rotate_task(uniform float data[], uniform float res[], uniform float tmp[], uniform int im_size){
     uniform int delta_y=(im_size+taskCount-1)/taskCount;
     uniform int y_start= taskIndex*delta_y;
@@ -129,6 +151,7 @@ task void add_task(uniform float array_1[], uniform float array_2[],uniform int 
         array_1[x]+=array_2[x];
     }
 }
+
 export void add_mt(uniform float array_1[], uniform float array_2[],uniform int count){
     launch[16] add_task(array_1,array_2,count);
     sync;
