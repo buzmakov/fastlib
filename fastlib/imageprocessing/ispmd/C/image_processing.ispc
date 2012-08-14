@@ -163,8 +163,12 @@ export void add_mt(uniform float array_1[], uniform float array_2[],uniform int 
 }
 
 task void rotate_subvolume_z(uniform float data[], uniform float res[],
-                        uniform float angle, uniform int im_size,  uniform int slices_count){
-    
+                        uniform float angle, uniform int im_size,  uniform int slices_count){ 
+
+}
+
+export void rotate_volume_z(uniform float data[], uniform float res[],
+                        uniform float angle, uniform int im_size,  uniform int slices_count) {
     uniform float alpha = angle/57.29577951308232;
     uniform float sa,ca;
     sincos(alpha,&sa,&ca);
@@ -177,31 +181,27 @@ task void rotate_subvolume_z(uniform float data[], uniform float res[],
     }
     foreach(z=0 ... slices_count){
         for(uniform int x = 0; x < im_size;x++){
-            for(uniform int y = 0;y < im_size;y++){
+      //      print("z=%\t,x=%\n",z,x); 
+            for(uniform int y = 0;y < im_size;y++){   
                 uniform float sx=tmp[x]+tmp[y+im_size];
                 uniform float sy=-tmp[x+im_size]+tmp[y];
                 uniform int isx=round(sx);
                 uniform int isy=round(sy);
+             //   print("z=%\t,x=%\t,y=%\t,isx=%\t,isy=%\n",z,x,y,isx,isy); 
                 if((0 < isx) && (isx < im_size-2) && (0 < isy) && (isy < im_size-2)){
-                    uniform int offset=(isx*im_size+isy)*im_size+z;
+                    uniform int offset=(isx*im_size+isy)*slices_count;
                     uniform float deltax= sx-isx;
                     uniform float deltay= sy-isy;
-                    uniform float r00=data[offset]*(1.0f-deltax)*(1.0f-deltay);
-                    uniform float r01=data[offset+1]*(1.0f-deltax)*deltay;
-                    uniform float r10=data[offset+im_size]*deltax*(1.0f-deltay);
-                    uniform float r11=data[offset+im_size+1]*deltax*deltay;;
-                    res[(x*im_size+y)*im_size+z]= r00+r01+r10+r11;
+                    float r00=data[offset+z]*(1.0f-deltax)*(1.0f-deltay);
+                    float r01=data[offset+slices_count+z]*(1.0f-deltax)*deltay;
+                    float r10=data[offset+slices_count*im_size+z]*deltax*(1.0f-deltay);
+                    float r11=data[offset+(im_size+1)*slices_count+z]*deltax*deltay;;
+                    res[(x*im_size+y)*slices_count+z]= r00+r01+r10+r11;
                 }else{
-                    res[(x*im_size+y)*im_size+z]=0.0;
+                    res[(x*im_size+y)*slices_count+z]=0.0;
                 }
             }
         }
     }
     delete[] tmp;
-}
-
-export void rotate_volume_z(uniform float data[], uniform float res[],
-                        uniform float angle, uniform int im_size,  uniform int slices_count) {
-    launch[16] rotate_subvolume_z(data, res, angle, im_size, slices_count);
-    sync;
 }
