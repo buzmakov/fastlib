@@ -6,6 +6,7 @@ export void sum_raw(uniform float array_in[], uniform float array_out[],uniform 
     array_out[0]= reduce_add(sum);
 }
 
+//task for project_mt function
 task void sum_task(uniform float array_in[], uniform float array_out[],uniform int im_size) {
     uniform int delta_x=(im_size+taskCount-1)/taskCount;
     uniform int x_start= taskIndex*delta_x;
@@ -20,6 +21,7 @@ task void sum_task(uniform float array_in[], uniform float array_out[],uniform i
     }
 }
 
+//multi_thread project function
 export void project_mt(uniform float array_in[], uniform float array_out[],uniform int im_size) {
     launch[16] sum_task(array_in, array_out,im_size);
     sync;
@@ -48,7 +50,7 @@ export void backproject_mt(uniform float array_in[], uniform float array_out[],u
     sync;
 }
 
-
+//rotate one image (slice)
 void rotate_one_image(uniform float data[], uniform float res[],
             uniform float angle, uniform int im_size){
     uniform float alpha = angle/57.29577951308232;
@@ -84,6 +86,7 @@ void rotate_one_image(uniform float data[], uniform float res[],
     delete[] tmp;
 }
 
+//rotate subvlobume (range of slices)
 task void rotate_subvolume(uniform float array_in[], uniform float array_out[],
                         uniform float angle, uniform int im_size,  uniform int slices_count){
     uniform int delta_slice=(slices_count+taskCount-1)/taskCount;
@@ -102,6 +105,7 @@ export void rotate_volume(uniform float array_in[], uniform float array_out[],
     sync;
 }
 
+//function for rotation part of image (for multithreading)
 task void rotate_task(uniform float data[], uniform float res[], uniform float tmp[], uniform int im_size){
     uniform int delta_y=(im_size+taskCount-1)/taskCount;
     uniform int y_start= taskIndex*delta_y;
@@ -126,6 +130,7 @@ task void rotate_task(uniform float data[], uniform float res[], uniform float t
     }
 }
 
+//multithread version of single image rotation
 export void rotate_mt(uniform float data[], uniform float res[], uniform float angle, uniform int im_size){
     uniform float alpha = angle/57.29577951308232;
     uniform float sa,ca;
@@ -154,5 +159,49 @@ task void add_task(uniform float array_1[], uniform float array_2[],uniform int 
 
 export void add_mt(uniform float array_1[], uniform float array_2[],uniform int count){
     launch[16] add_task(array_1,array_2,count);
+    sync;
+}
+
+task void rotate_subvolume_z(uniform float data[], uniform float res[],
+                        uniform float angle, uniform int im_size,  uniform int slices_count){
+    
+    uniform float alpha = angle/57.29577951308232;
+    uniform float sa,ca;
+    sincos(alpha,&sa,&ca);
+    uniform float * uniform tmp = uniform new uniform float[im_size*2];
+    uniform float center_res= (float)im_size/2.0-0.5;
+    for(uniform int x = 0; x< im_size;x++){
+           uniform float xmiddle= x-center_res;
+           tmp[x]= xmiddle*ca+center_res;
+           tmp[im_size+x]=xmiddle*sa;
+    }
+    foreach(z=0 ... slices_count){
+        for(uniform int x = 0; x < im_size;x++){
+            for(uniform int y = 0;y < im_size;y++){
+                uniform float sx=tmp[x]+tmp[y+im_size];
+                uniform float sy=-tmp[x+im_size]+tmp[y];
+                uniform int isx=round(sx);
+                uniform int isy=round(sy);
+                if((0 < isx) && (isx < im_size-2) && (0 < isy) && (isy < im_size-2)){
+                    uniform int offset=(isx*im_size+isy)*im_size+z;
+                    uniform float deltax= sx-isx;
+                    uniform float deltay= sy-isy;
+                    uniform float r00=data[offset]*(1.0f-deltax)*(1.0f-deltay);
+                    uniform float r01=data[offset+1]*(1.0f-deltax)*deltay;
+                    uniform float r10=data[offset+im_size]*deltax*(1.0f-deltay);
+                    uniform float r11=data[offset+im_size+1]*deltax*deltay;;
+                    res[(x*im_size+y)*im_size+z]= r00+r01+r10+r11;
+                }else{
+                    res[(x*im_size+y)*im_size+z]=0.0;
+                }
+            }
+        }
+    }
+    delete[] tmp;
+}
+
+export void rotate_volume_z(uniform float data[], uniform float res[],
+                        uniform float angle, uniform int im_size,  uniform int slices_count) {
+    launch[16] rotate_subvolume_z(data, res, angle, im_size, slices_count);
     sync;
 }
