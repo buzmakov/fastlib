@@ -67,8 +67,8 @@ void rotate_one_image(uniform float data[], uniform float res[],
         for(uniform int y = 0; y<im_size;y++){
             float sx=tmp[x]+tmp[y+im_size];
             float sy=-tmp[x+im_size]+tmp[y];
-            int isx=round(sx);
-            int isy=round(sy);
+            int isx=floor(sx);
+            int isy=floor(sy);
             cif((0 < isx) && (isx < im_size-2) && (0 < isy) && (isy < im_size-2)){
                 int offset=isx*im_size+isy;
                 float deltax= sx-isx;
@@ -78,6 +78,10 @@ void rotate_one_image(uniform float data[], uniform float res[],
                 float r10=data[offset+im_size]*deltax*(1.0f-deltay);
                 float r11=data[offset+im_size+1]*deltax*deltay;;
                 res[x*im_size+y]= r00+r01+r10+r11;
+                // if ((r00+r01+r10+r11)>2.0){
+                //     print("%\t%\t%\t%\n",r00,r01,r10,r11);
+                //     break;
+                // }
             }else{
                 res[x*im_size+y]=0.0;
             }
@@ -113,8 +117,8 @@ task void rotate_task(uniform float data[], uniform float res[], uniform float t
     foreach(x = 0 ... im_size, y= y_start ... y_stop){
         float sx=tmp[x]+tmp[y+im_size];
         float sy=-tmp[x+im_size]+tmp[y];
-        int isx=round(sx);
-        int isy=round(sy);
+        int isx=floor(sx);
+        int isy=floor(sy);
         cif((0 < isx) && (isx < im_size-2) && (0 < isy) && (isy < im_size-2)){
             int offset=isx*im_size+isy;
             float deltax= sx-isx;
@@ -183,8 +187,8 @@ task void rotate_subvolume_z(uniform float data[], uniform float res[],
         for(uniform int y = 0;y < im_size;y++){   
             uniform float sx=tmp[x]+tmp[y+im_size];
             uniform float sy=-tmp[x+im_size]+tmp[y];
-            uniform int isx=round(sx);
-            uniform int isy=round(sy);
+            uniform int isx=floor(sx);
+            uniform int isy=floor(sy);
             if((0 < isx) && (isx < im_size-2) && (0 < isy) && (isy < im_size-2)){
                 uniform int offset=(isx*im_size+isy)*slices_count;
                 uniform float deltax= sx-isx;
