@@ -25,3 +25,9 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+
+#idea folders
+.idea
+
+#my files
+*.h5
