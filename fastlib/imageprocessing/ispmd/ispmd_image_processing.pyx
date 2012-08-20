@@ -7,9 +7,6 @@ cimport numpy
 import cython
 cimport cython
 
-#cdef extern from "C/c_image_processing.h":
-#    void project(float* vin, float* vout, int count)
-
 cdef extern from "C/objs/image_processing_ispc.h":
     void rotate_mt(float* data, float* res, float angle, int im_size)
     void rotate_volume(float* data, float* res, float angle, int im_size, int slices_count)
@@ -18,6 +15,7 @@ cdef extern from "C/objs/image_processing_ispc.h":
     void project(float* vin, float* vout, int im_size)
     void add_mt(float* v1, float* v2, int im_size)
     void project_volume(float* data, float* res, int im_size, int slice_count)
+    void backproject_volume(float* data, float* res, int im_size, int slice_count)
 
 def project_fast(numpy.ndarray[numpy.float32_t, ndim=2] vin):
     cdef numpy.int32_t count=vin.shape[0]
@@ -78,3 +76,9 @@ def project_volume_fast(numpy.ndarray[numpy.float32_t, ndim=3] data):
         dtype='float32')
     project_volume(<float *> data.data, <float *> res.data, im_size,slice_count)
     return res
+
+def backproject_volume_fast(numpy.ndarray[numpy.float32_t, ndim=2] data, 
+        numpy.ndarray[numpy.float32_t, ndim=3] res):
+    cdef numpy.int32_t im_size=data.shape[1]
+    cdef numpy.int32_t slice_count=data.shape[0]
+    backproject_volume(<float *> data.data, <float *> res.data, im_size,slice_count)

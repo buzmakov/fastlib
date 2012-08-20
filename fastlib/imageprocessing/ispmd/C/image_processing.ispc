@@ -238,3 +238,26 @@ export void project_volume(uniform float data[], uniform float res[],
     launch[16] project_subvolume(data,res,im_size,slices_count);
     sync;
 }
+
+task void backproject_subvolume(uniform float data[], uniform float res[],
+                        uniform int im_size, uniform int slices_count) {
+    uniform int delta_x=(slices_count+taskCount-1)/taskCount;
+    uniform int x_start= taskIndex*delta_x;
+    uniform int x_stop= min(slices_count,x_start+delta_x);
+    for(uniform int x = x_start; x < x_stop;x++){
+        for(uniform int y = 0;y < im_size;y++){
+            uniform int offset =(x*im_size+y)*im_size;   
+            float sum=0;
+            float r=data[x*im_size+y]/im_size;
+            foreach(z=0 ... im_size){
+                res[offset+z]+=r;
+                }
+        }
+    }
+}
+
+export void backproject_volume(uniform float data[], uniform float res[],
+                        uniform int im_size, uniform int slices_count){ 
+    launch[16] backproject_subvolume(data,res,im_size,slices_count);
+    sync;
+}
