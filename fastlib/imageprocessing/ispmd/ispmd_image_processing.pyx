@@ -17,6 +17,7 @@ cdef extern from "C/objs/image_processing_ispc.h":
     void backproject(float* vin, float* vout, int im_size)
     void project(float* vin, float* vout, int im_size)
     void add_mt(float* v1, float* v2, int im_size)
+    void project_volume(float* data, float* res, int im_size, int slice_count)
 
 def project_fast(numpy.ndarray[numpy.float32_t, ndim=2] vin):
     cdef numpy.int32_t count=vin.shape[0]
@@ -68,4 +69,12 @@ def rotate_volume_z_fast(numpy.ndarray[numpy.float32_t, ndim=3] data, numpy.floa
     cdef numpy.int32_t slices_count=data.shape[2]
     cdef numpy.ndarray[numpy.float32_t, ndim=3] res=numpy.empty_like(data)
     rotate_volume_z(<float *> data.data, <float *> res.data, angle, im_size,slices_count)
+    return res
+
+def project_volume_fast(numpy.ndarray[numpy.float32_t, ndim=3] data):
+    cdef numpy.int32_t im_size=data.shape[1]
+    cdef numpy.int32_t slice_count=data.shape[0]
+    cdef numpy.ndarray[numpy.float32_t, ndim=2] res=numpy.empty(shape=(slice_count,im_size),
+        dtype='float32')
+    project_volume(<float *> data.data, <float *> res.data, im_size,slice_count)
     return res
