@@ -166,7 +166,6 @@ export void add_mt(uniform float array_1[], uniform float array_2[],uniform int 
     sync;
 }
 
-
 task void rotate_subvolume_z(uniform float data[], uniform float res[],
                         uniform float angle, uniform int im_size,  uniform int slices_count) {
     uniform float alpha = angle/57.29577951308232;
@@ -223,10 +222,10 @@ task void project_subvolume(uniform float data[], uniform float res[],
     uniform int x_stop= min(slices_count,x_start+delta_x);
     for(uniform int x = x_start; x < x_stop;x++){
         for(uniform int y = 0;y < im_size;y++){
-            uniform int offset =(x*im_size+y)*im_size;   
+            uniform int offset =(x*im_size*im_size+y);   
             float sum=0;
             foreach(z=0 ... im_size){
-                sum+=data[offset+z];
+                sum+=data[offset+z*im_size];
                 }
             res[x*im_size+y]=reduce_add(sum);
         }
@@ -246,11 +245,11 @@ task void backproject_subvolume(uniform float data[], uniform float res[],
     uniform int x_stop= min(slices_count,x_start+delta_x);
     for(uniform int x = x_start; x < x_stop;x++){
         for(uniform int y = 0;y < im_size;y++){
-            uniform int offset =(x*im_size+y)*im_size;   
+            uniform int offset =x*im_size*im_size+y;   
             float sum=0;
             float r=data[x*im_size+y]/im_size;
             foreach(z=0 ... im_size){
-                res[offset+z]+=r;
+                res[offset+z*im_size]+=r;
                 }
         }
     }
