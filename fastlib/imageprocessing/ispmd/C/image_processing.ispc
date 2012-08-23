@@ -249,7 +249,7 @@ task void backproject_subvolume(uniform float data[], uniform float res[],
             float sum=0;
             float r=data[x*im_size+y]/im_size;
             foreach(z=0 ... im_size){
-                res[offset+z*im_size]+=r;
+                res[offset+z*im_size]=r;
                 }
         }
     }
