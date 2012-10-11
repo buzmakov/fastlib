@@ -17,6 +17,7 @@ cdef extern from "C/objs/image_processing_ispc.h":
     void project_volume(float* data, float* res, int im_size, int slice_count)
     void project_volume_z(float* data, float* res, int im_size, int slice_count)
     void backproject_volume(float* data, float* res, int im_size, int slice_count)
+    void backproject_volume_z(float* data, float* res, float lambd, int im_size, int slice_count)
 
 def project_fast(numpy.ndarray[numpy.float32_t, ndim=2] vin):
     cdef numpy.int32_t count=vin.shape[0]
@@ -91,3 +92,9 @@ def backproject_volume_fast(numpy.ndarray[numpy.float32_t, ndim=2] data,
     cdef numpy.int32_t im_size=data.shape[1]
     cdef numpy.int32_t slice_count=data.shape[0]
     backproject_volume(<float *> data.data, <float *> res.data, im_size,slice_count)
+
+def backproject_volume_z_fast(numpy.ndarray[numpy.float32_t, ndim=2] data, 
+        numpy.ndarray[numpy.float32_t, ndim=3] res, numpy.float32_t lambd):
+    cdef numpy.int32_t im_size=data.shape[0]
+    cdef numpy.int32_t slice_count=data.shape[1]
+    backproject_volume_z(<float *> data.data, <float *> res.data, lambd, im_size,slice_count)

@@ -266,6 +266,29 @@ export void project_volume_z(uniform float data[], uniform float res[],
     launch[8] project_subvolume_z(data,res,im_size,slices_count);
     sync;
 }
+//z- used in volume tomography reconstruction
+task void backproject_subvolume_z(uniform float data[], uniform float res[],
+        uniform float lambda, uniform int im_size, uniform int slices_count) {
+    uniform int delta_y=(im_size+taskCount-1)/taskCount;
+    uniform int y_start= taskIndex*delta_y;
+    uniform int y_stop= min(im_size,y_start+delta_y);
+    uniform int stride =slices_count*im_size;
+    uniform float k=lambda/im_size;
+    for(uniform int z=0; z< im_size*stride; z+=stride){
+        for(int y = y_start;y < y_stop;y++){
+            foreach(x = 0 ... slices_count){
+                int offset = x+y*slices_count;                         
+                res[offset+z]+=k*data[offset];
+            }
+        }
+    }
+}
+//z- used in volume tomography reconstruction
+export void backproject_volume_z(uniform float data[], uniform float res[],
+        uniform float lambda, uniform int im_size, uniform int slices_count){ 
+    launch[8] backproject_subvolume_z(data,res, lambda, im_size,slices_count);
+    sync;
+}
 
 task void backproject_subvolume(uniform float data[], uniform float res[],
                         uniform int im_size, uniform int slices_count) {
@@ -275,8 +298,7 @@ task void backproject_subvolume(uniform float data[], uniform float res[],
     for(uniform int x = x_start; x < x_stop;x++){
         for(uniform int y = 0;y < im_size;y++){
             uniform int offset =x*im_size*im_size+y;   
-            float sum=0;
-            float r=data[x*im_size+y]/im_size;
+            uniform float r=data[x*im_size+y]/im_size;
             foreach(z=0 ... im_size){
                 res[offset+z*im_size]=r;
                 }
