@@ -166,6 +166,7 @@ export void add_mt(uniform float array_1[], uniform float array_2[],uniform int 
     sync;
 }
 
+//z- used in volume tomography reconstruction
 task void rotate_subvolume_z(uniform float data[], uniform float res[],
                         uniform float angle, uniform int im_size,  uniform int slices_count) {
     uniform float alpha = angle/57.29577951308232;
@@ -209,6 +210,7 @@ task void rotate_subvolume_z(uniform float data[], uniform float res[],
     delete[] tmp;
 }
 
+//z- used in volume tomography reconstruction
 export void rotate_volume_z(uniform float data[], uniform float res[],
                         uniform float angle, uniform int im_size,  uniform int slices_count){ 
     launch[16] rotate_subvolume_z(data,res,angle,im_size,slices_count);
@@ -235,6 +237,31 @@ task void project_subvolume(uniform float data[], uniform float res[],
 export void project_volume(uniform float data[], uniform float res[],
                         uniform int im_size, uniform int slices_count){ 
     launch[16] project_subvolume(data,res,im_size,slices_count);
+    sync;
+}
+
+//z- used in volume tomography reconstruction
+task void project_subvolume_z(uniform float data[], uniform float res[],
+                        uniform int im_size, uniform int slices_count) {
+    uniform int delta_x=(slices_count+taskCount-1)/taskCount;
+    uniform int x_start= taskIndex*delta_x;
+    uniform int x_stop= min(slices_count,x_start+delta_x);
+    for(uniform int x = x_start; x < x_stop;x++){
+        for(uniform int y = 0;y < im_size;y++){
+            uniform int offset =(x+y*slices_count);   
+            float sum=0;
+            foreach(z=0 ... im_size){
+                sum+=data[offset+z*slices_count*im_size];
+                }
+            res[offset]=reduce_add(sum);
+        }
+    }
+}
+
+//z- used in volume tomography reconstruction
+export void project_volume_z(uniform float data[], uniform float res[],
+                        uniform int im_size, uniform int slices_count){ 
+    launch[16] project_subvolume_z(data,res,im_size,slices_count);
     sync;
 }
 
