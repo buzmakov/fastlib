@@ -162,7 +162,7 @@ task void add_task(uniform float array_1[], uniform float array_2[],uniform int 
 }
 
 export void add_mt(uniform float array_1[], uniform float array_2[],uniform int count){
-    launch[16] add_task(array_1,array_2,count);
+    launch[8] add_task(array_1,array_2,count);
     sync;
 }
 
@@ -210,10 +210,10 @@ task void rotate_subvolume_z(uniform float data[], uniform float res[],
     delete[] tmp;
 }
 
-//z- used in volume tomography reconstruction
+//z- used in volume  tomography reconstruction
 export void rotate_volume_z(uniform float data[], uniform float res[],
                         uniform float angle, uniform int im_size,  uniform int slices_count){ 
-    launch[16] rotate_subvolume_z(data,res,angle,im_size,slices_count);
+    launch[8] rotate_subvolume_z(data,res,angle,im_size,slices_count);
     sync;
 }
 
@@ -275,10 +275,10 @@ task void backproject_subvolume_z(uniform float data[], uniform float res[],
     uniform int stride =slices_count*im_size;
     uniform float k=lambda/im_size;
     for(uniform int z=0; z< im_size*stride; z+=stride){
-        for(int y = y_start;y < y_stop;y++){
+        for(uniform int y = y_start;y < y_stop;y++){
             foreach(x = 0 ... slices_count){
                 int offset = x+y*slices_count;                         
-                res[offset+z]+=k*data[offset];
+                res[offset+z]=k*data[offset];
             }
         }
     }
@@ -309,5 +309,24 @@ task void backproject_subvolume(uniform float data[], uniform float res[],
 export void backproject_volume(uniform float data[], uniform float res[],
                         uniform int im_size, uniform int slices_count){ 
     launch[16] backproject_subvolume(data,res,im_size,slices_count);
+    sync;
+}
+
+task void volume_filter_task(uniform float data[], uniform int count) {
+    uniform int delta_x=(count+taskCount-1)/taskCount;
+    uniform int x_start= taskIndex*delta_x;
+    uniform int x_stop= min(count,x_start+delta_x);
+
+    foreach(x = x_start ... x_stop){
+        cif(data[x] > 0){
+            ;
+        }else{
+            data[x]/= 2;
+        }
+    }
+}
+
+export void volume_filter(uniform float data[], uniform int count){
+    launch[8] volume_filter_task(data, count);
     sync;
 }

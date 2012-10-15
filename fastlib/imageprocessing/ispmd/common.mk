@@ -4,7 +4,7 @@ TASK_LIB=-lpthread
 TASK_OBJ=tasksys.o
 
 CXX=g++ -fPIC
-CXXFLAGS=-Iobjs/ -O2 -m64
+CXXFLAGS=-Iobjs/ -O2 -m64  
 LIBS=-lm $(TASK_LIB) -lstdc++
 ISPC=./ispc -O2 --arch=x86-64 $(ISPC_FLAGS) --pic
 ISPC_OBJS=$(addprefix objs/, $(ISPC_SRC:.ispc=)_ispc.o $(ISPC_SRC:.ispc=)_ispc_sse2.o \

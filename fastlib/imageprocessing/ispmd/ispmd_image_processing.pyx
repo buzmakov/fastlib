@@ -18,6 +18,7 @@ cdef extern from "C/objs/image_processing_ispc.h":
     void project_volume_z(float* data, float* res, int im_size, int slice_count)
     void backproject_volume(float* data, float* res, int im_size, int slice_count)
     void backproject_volume_z(float* data, float* res, float lambd, int im_size, int slice_count)
+    void volume_filter(float* data, int elements_count)
 
 def project_fast(numpy.ndarray[numpy.float32_t, ndim=2] vin):
     cdef numpy.int32_t count=vin.shape[0]
@@ -55,6 +56,11 @@ def rotate_sq_fast_ref(numpy.ndarray[numpy.float32_t, ndim=2] data, numpy.float3
 def add_fast_ref(numpy.ndarray[numpy.float32_t, ndim=2] v1, numpy.ndarray[numpy.float32_t, ndim=2] v2):
 #    TODO: chek shape(v1)=shape(v2)
     cdef numpy.int32_t count=v1.shape[0]*v1.shape[1]
+    add_mt(<float *>v1.data,<float *> v2.data,count)
+
+def summ_fast(numpy.ndarray[numpy.float32_t, ndim=3] v1, numpy.ndarray[numpy.float32_t, ndim=3] v2):
+#    TODO: chek shape(v1)=shape(v2)
+    cdef numpy.int32_t count=v1.shape[0]*v1.shape[1]*v1.shape[2]
     add_mt(<float *>v1.data,<float *> v2.data,count)
 
 def rotate_volume_fast(numpy.ndarray[numpy.float32_t, ndim=3] data, numpy.float32_t angle):
@@ -98,3 +104,8 @@ def backproject_volume_z_fast(numpy.ndarray[numpy.float32_t, ndim=2] data,
     cdef numpy.int32_t im_size=data.shape[0]
     cdef numpy.int32_t slice_count=data.shape[1]
     backproject_volume_z(<float *> data.data, <float *> res.data, lambd, im_size,slice_count)
+
+def volume_filter_fast(numpy.ndarray[numpy.float32_t, ndim=3] data):
+    cdef numpy.int32_t elements_count=data.shape[0]*data.shape[1]*data.shape[2]
+    volume_filter(<float *> data.data , elements_count)
+
