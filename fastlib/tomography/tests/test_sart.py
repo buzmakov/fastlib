@@ -21,13 +21,14 @@ def genrate_sinogam_ref(image, angles):
     return sinogram.astype('float32'),angles.astype('float32')
 
 def test_sart():
-    size=500
+    size=1024
     angles=numpy.arange(0,180,1.0,dtype='float32')
     x=modified_shepp_logan((size,size,3))[:,:,1]
     x=numpy.array(x)
     sinogram, angles = genrate_sinogam_ref(x,angles)
     t=time.time()
-    res=sart(sinogram, angles)
+    for i in range(32):
+        res=sart(sinogram, angles)
     print 'Tomographic reconstruction: '+ str(time.time()-t)
 
     import pylab

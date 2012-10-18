@@ -4,6 +4,7 @@ import sys
 import numpy
 import pylab
 import h5py
+import time
 
 sys.path.insert(0, '..')
 import fastlib
@@ -25,7 +26,7 @@ def generate_sinogramm(volume, angles):
     return sinograms
 
 
-@profile
+# @profile
 def sart(sinogram, angles):
     project = myfast.project_volume_z_fast
     rotate = myfast.rotate_volume_z_fast
@@ -37,7 +38,7 @@ def sart(sinogram, angles):
                              sinogram.shape[1]), dtype='float32')
     tmp_vol = numpy.empty_like(res)
     #tmp_proj=numpy.empty(shape=(sinogram.shape[0],sinogram.shape[1]),dtype='float32')
-    for l in numpy.array([0.8, ], dtype='float32'):
+    for l in numpy.array([0.8, 0.3, ], dtype='float32'):
         for ia, ang in enumerate(angles):
             tmp_vol = rotate(res, ang)
             tmp_proj = project(tmp_vol)
@@ -55,15 +56,16 @@ if __name__ == "__main__":
 
     # Увелииваем количество солёв в n раз
     # sl = numpy.repeat(sl, 2, axis=-1)
-    sl = numpy.repeat(sl, 4, axis=0)
-    sl = numpy.repeat(sl, 4, axis=1)
-    sl=sl[:,:,:8]
+    #sl = numpy.repeat(sl, 2, axis=0)
+    #sl = numpy.repeat(sl, 2, axis=1)
+    # sl=sl[:,:,:16]
     sl = sl.copy()
     print sl.shape
 
     angles = numpy.arange(0, 180, 1)
     numpy.random.shuffle(angles)
     sinogr = generate_sinogramm(sl, angles)
+    t = time.time()
     res = sart(sinogr, angles)
-
+    print 'Total time: ', time.time() - t
     # show_center_slice(res)
