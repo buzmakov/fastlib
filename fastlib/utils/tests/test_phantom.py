@@ -19,12 +19,12 @@ dtypes = [np.float32, np.float64, np.int32, np.int64]
 spheres = [
     {'A':1, 'a':1., 'b':1., 'c':1., 'x0':0., 'y0':0., 'z0':0., 'phi':0., 'theta':0., 'psi':0.},
     {'A':.5, 'a':1., 'b':1., 'c':1., 'x0':0., 'y0':0., 'z0':0., 'phi':0., 'theta':0., 'psi':0.}
-    ]
+]
 
 spheres_arrays = [
     [[1., 1., 1., 1., 0., 0., 0., 0., 0., 0.]],
     [[.5, 1., 1., 1., 0., 0., 0., 0., 0., 0.]],
-    ]
+]
 
 # tests for all predefined phantoms
 for p in phantoms:
@@ -38,13 +38,17 @@ for p in phantoms:
                 yield numpy.testing.assert_equal, p(shape, dtype=dtype).dtype, dtype
 
 # tests on the phantom function
+
+
 def test_central_value():
     for shape in shapes:
         i, j, k = np.asarray(shape) / 2.
         for p in spheres:
-            yield numpy.testing.assert_equal, phantom(shape, [p,])[i, j, k], p['A']
+            yield numpy.testing.assert_equal, phantom(shape, [p, ])[i, j, k], p['A']
 
 # tests conversion from array to dict
+
+
 def test_array_to_parameters():
     from fastlib.utils.phantom import _array_to_parameters
     for a, p in zip(spheres_arrays, spheres):

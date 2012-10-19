@@ -7,6 +7,7 @@ import os
 import h5py
 import numpy
 
+
 def save_amira(result_file):
     """
     Функция сохраняет реконструированные слои в формате Amira raw file
@@ -20,16 +21,16 @@ def save_amira(result_file):
         Тип данных: float32 little endian
     """
     logging.info('Saving Amira files')
-    data_path=os.path.dirname(result_file)
-    with open(os.path.join(data_path,'amira.raw'),'wb') as amira_file:
-        with h5py.File(result_file,'r') as h5f:
-            x=h5f['Results']
+    data_path = os.path.dirname(result_file)
+    with open(os.path.join(data_path, 'amira.raw'), 'wb') as amira_file:
+        with h5py.File(result_file, 'r') as h5f:
+            x = h5f['Results']
             for i in range(x.shape[0]):
-                numpy.array(x[i,:,:]).tofile(amira_file)
+                numpy.array(x[i, :, :]).tofile(amira_file)
 
-            file_shape=x.shape
+            file_shape = x.shape
 
-            with open(os.path.join(data_path,'tomo.hx'),'w') as af:
+            with open(os.path.join(data_path, 'tomo.hx'), 'w') as af:
                 af.write('# Amira Script\n')
                 af.write('remove -all\n')
                 af.write(r'[ load -raw ${SCRIPTDIR}/amira.raw little xfastest float 1 '+

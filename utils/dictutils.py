@@ -2,6 +2,7 @@ from exceptions import IndexError, KeyError
 
 __author__ = 'makov'
 
+
 def get_value(dic, keys_chain, key):
     """
     Return value of key (up toward the tree)
@@ -17,7 +18,7 @@ def get_value(dic, keys_chain, key):
 
     while True:
         try:
-            tmp_node = get_node(dic,keys_chain)
+            tmp_node = get_node(dic, keys_chain)
             if key in tmp_node:
                 return tmp_node[key]
             else:
@@ -26,7 +27,7 @@ def get_value(dic, keys_chain, key):
             raise KeyError
 
 
-def get_node(dic,keys_chain):
+def get_node(dic, keys_chain):
     """
     Return node from dictionary by  chain of keys
 
@@ -42,7 +43,7 @@ def get_node(dic,keys_chain):
     return node
 
 
-def try_get_value(dic, keys_chain, key,default_value=None):
+def try_get_value(dic, keys_chain, key, default_value=None):
     """
     Safe version of get_value, if key not exist return def_value
     :param dic:

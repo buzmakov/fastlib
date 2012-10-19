@@ -8,72 +8,75 @@ import numpy
 import pylab
 from itertools import groupby
 
+
 def bencmark_projection(sizes):
-    bencmark_res={}
-    counts=100
-    functions={'ocv.project':ocv.project,
-               'ispmd.project':ispmd.project,
-               'ref.project':ref.project,
-               'opencl.project':opencl.project}
+    bencmark_res = {}
+    counts = 100
+    functions = {'ocv.project': ocv.project,
+                 'ispmd.project': ispmd.project,
+                 'ref.project': ref.project,
+                 'opencl.project': opencl.project}
     for size in sizes:
-        x=phantom.modified_shepp_logan((size,size,3))[:,:,1]
-        x=numpy.array(x)
+        x = phantom.modified_shepp_logan((size, size, 3))[:, :, 1]
+        x = numpy.array(x)
         for func_name in functions:
-            func=functions[func_name]
-            t=time.time()
+            func = functions[func_name]
+            t = time.time()
             for c in range(counts):
-                y=func(x)
-            btime=(time.time()-t)/counts
+                y = func(x)
+            btime = (time.time() - t) / counts
             if not func_name in bencmark_res:
-                bencmark_res[func_name]=[]
-            bencmark_res[func_name].append({'size':size,'time':btime})
+                bencmark_res[func_name] = []
+            bencmark_res[func_name].append({'size': size, 'time': btime})
     return bencmark_res
+
 
 def bencmark_backprojection(sizes):
-    bencmark_res={}
-    counts=10
-    functions={'ocv.back_project':ocv.back_project,
-               'ispmd.back_project':ispmd.back_project,
-               'ref.back_project':ref.back_project}
+    bencmark_res = {}
+    counts = 10
+    functions = {'ocv.back_project': ocv.back_project,
+                 'ispmd.back_project': ispmd.back_project,
+                 'ref.back_project': ref.back_project}
     for size in sizes:
-        x=phantom.modified_shepp_logan((size,size,3))[:,:,1]
-        x=ref.project(x)
+        x = phantom.modified_shepp_logan((size, size, 3))[:, :, 1]
+        x = ref.project(x)
         for func_name in functions:
-            func=functions[func_name]
-            t=time.time()
+            func = functions[func_name]
+            t = time.time()
             for c in range(counts):
-                y=func(x)
-            btime=(time.time()-t)/counts
+                y = func(x)
+            btime = (time.time() - t) / counts
             if not func_name in bencmark_res:
-                bencmark_res[func_name]=[]
-            bencmark_res[func_name].append({'size':size,'time':btime})
+                bencmark_res[func_name] = []
+            bencmark_res[func_name].append({'size': size, 'time': btime})
     return bencmark_res
 
-def bencmark_rotation(sizes,angles):
-    bencmark_res={}
-    counts=10
-    functions={'ocv.rotate_square':ocv.rotate_square,
-               'ispmd.rotate_square':ispmd.rotate_square,
-#               'ref.rotate_square':ref.rotate_square
-            }
+
+def bencmark_rotation(sizes, angles):
+    bencmark_res = {}
+    counts = 10
+    functions = {'ocv.rotate_square': ocv.rotate_square,
+                 'ispmd.rotate_square': ispmd.rotate_square,
+                 #               'ref.rotate_square':ref.rotate_square
+                 }
     for size in sizes:
-        x=phantom.modified_shepp_logan((size,size,3))[:,:,1]
-        x=numpy.array(x)
+        x = phantom.modified_shepp_logan((size, size, 3))[:, :, 1]
+        x = numpy.array(x)
         for func_name in functions:
-            func=functions[func_name]
+            func = functions[func_name]
             for angle in angles:
-                t=time.time()
+                t = time.time()
                 for c in range(counts):
-                    y=func(x,angle)
-                btime=(time.time()-t)/counts
+                    y = func(x, angle)
+                btime = (time.time() - t) / counts
                 if not func_name in bencmark_res:
-                    bencmark_res[func_name]=[]
-                bencmark_res[func_name].append({'size':size,'time':btime,'angle':angle})
+                    bencmark_res[func_name] = []
+                bencmark_res[func_name].append({'size': size, 'time': btime, 'angle': angle})
     return bencmark_res
 
 
 def visualize_rotation_bench(res):
-    visualize_1d_bench(res,'Rotation_benchmark')
+    visualize_1d_bench(res, 'Rotation_benchmark')
 
     pylab.figure()
     for func_name in res:
@@ -93,7 +96,7 @@ def visualize_rotation_bench(res):
     pylab.legend()
 
 
-def visualize_1d_bench(res,title):
+def visualize_1d_bench(res, title):
     pylab.figure()
     print title
     for func_name in res:
@@ -101,11 +104,11 @@ def visualize_1d_bench(res,title):
         plot_graph_x = []
         plot_graph_y = []
         for k, g in groupby(data, lambda x: x['size']):
-            gl=list(g)
+            gl = list(g)
             plot_graph_x.append(k)
-            plot_graph_y.append(sum([x['time'] for x in gl])/len(gl))
+            plot_graph_y.append(sum([x['time'] for x in gl]) / len(gl))
         print func_name.split('.')[0],
-        print[str.format('{0:.3}',x) for x in plot_graph_y]
+        print[str.format('{0:.3}', x) for x in plot_graph_y]
         pylab.plot(plot_graph_x, plot_graph_y, label=func_name.split('.')[0])
         pylab.hold(True)
     pylab.hold(False)
@@ -115,15 +118,15 @@ def visualize_1d_bench(res,title):
     pylab.title(title)
 
 
-if __name__=="__main__":
-    sizes=[100,500,1000,]
-    res_proj=bencmark_projection(sizes)
-    visualize_1d_bench(res_proj,'Projection_benchmark')
+if __name__ == "__main__":
+    sizes = [100, 500, 1000, ]
+    res_proj = bencmark_projection(sizes)
+    visualize_1d_bench(res_proj, 'Projection_benchmark')
 
-    res_bproj=bencmark_backprojection(sizes)
-    visualize_1d_bench(res_bproj,'Backprojection_benchmark')
+    res_bproj = bencmark_backprojection(sizes)
+    visualize_1d_bench(res_bproj, 'Backprojection_benchmark')
 
-    res_rot=bencmark_rotation(sizes,range(0,360,10))
+    res_rot = bencmark_rotation(sizes, range(0, 360, 10))
     visualize_rotation_bench(res_rot)
 
 #    pylab.show()

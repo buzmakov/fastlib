@@ -3,6 +3,7 @@ __author__ = 'makov'
 import numpy
 import scipy.ndimage
 
+
 def project(src):
     '''
     Project 2D array for parallel case (summing along rows)
@@ -17,7 +18,8 @@ def project(src):
     :param src: 2D numpy array
     :return:
     '''
-    return numpy.sum(src,axis=-1,dtype='float32')
+    return numpy.sum(src, axis=-1, dtype='float32')
+
 
 def back_project(src):
     """
@@ -33,16 +35,17 @@ def back_project(src):
     :param src:
     :return:
     """
-    y=numpy.zeros([len(src),]*2,dtype='float32')
-    y[:,]=src/float(len(src))
-    res=numpy.rot90(y,3)
+    y = numpy.zeros([len(src), ] * 2, dtype='float32')
+    y[:, ] = src / float(len(src))
+    res = numpy.rot90(y, 3)
     return res
 
-def rotate_square_image(src,angle):
+
+def rotate_square_image(src, angle):
     """
 
     :param src: square numpy array
     :param angle: rotation angle in degrees CCW
     """
-    res=scipy.ndimage.rotate(src,angle,order=1,reshape=False).astype('float32')
+    res = scipy.ndimage.rotate(src, angle, order=1, reshape=False).astype('float32')
     return res

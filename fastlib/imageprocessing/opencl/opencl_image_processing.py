@@ -17,16 +17,16 @@ project_prg = cl.Program(ctx, """
         }
         """).build()
 
+
 def project(src):
-    stride=src.shape[0]
-    res=numpy.zeros(stride,dtype='float32')
+    stride = src.shape[0]
+    res = numpy.zeros(stride, dtype='float32')
 
     mf = cl.mem_flags
 
     src_buf = cl.Buffer(ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=src)
-    res_buf = cl.Buffer(ctx,  mf.WRITE_ONLY |mf.COPY_HOST_PTR, hostbuf=res)
+    res_buf = cl.Buffer(ctx, mf.WRITE_ONLY | mf.COPY_HOST_PTR, hostbuf=res)
 
-
-    project_prg.project(queue,(stride,),None,src_buf,res_buf, numpy.int32(stride))
-    cl.enqueue_copy(queue,res,res_buf).wait()
+    project_prg.project(queue, (stride,), None, src_buf, res_buf, numpy.int32(stride))
+    cl.enqueue_copy(queue, res, res_buf).wait()
     return res

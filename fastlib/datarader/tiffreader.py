@@ -7,6 +7,8 @@ import Image
 import logging
 
 #TODO: Add tests
+
+
 def get_frame_from_file(file_path):
     """
     Get array from tiff file
@@ -17,7 +19,7 @@ def get_frame_from_file(file_path):
     :raise: IOError if input file not exists.
     """
     if os.path.exists(file_path):
-        logging.info(str.format('Reading TIFF file {0}',file_path))
+        logging.info(str.format('Reading TIFF file {0}', file_path))
         image = Image.open(file_path)
         a = numpy.array(image.getdata(), dtype='uint16').reshape(image.size).astype('float32')
         return a
