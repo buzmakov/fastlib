@@ -183,26 +183,28 @@ task void rotate_subvolume_z(uniform float data[], uniform float res[],
     uniform int delta_x=(im_size+taskCount-1)/taskCount;
     uniform int x_start= taskIndex*delta_x;
     uniform int x_stop= min(im_size,x_start+delta_x);
+
     for(uniform int x = x_start; x < x_stop;x++){
         for(uniform int y = 0;y < im_size;y++){   
             uniform float sx=tmp[x]+tmp[y+im_size];
             uniform float sy=-tmp[x+im_size]+tmp[y];
             uniform int isx=floor(sx);
             uniform int isy=floor(sy);
+            uniform int res_offset=(x*im_size+y)*slices_count;
             if((0 < isx) && (isx < im_size-2) && (0 < isy) && (isy < im_size-2)){
                 uniform int offset=(isx*im_size+isy)*slices_count;
                 uniform float deltax= sx-isx;
                 uniform float deltay= sy-isy;
                 foreach(z=0 ... slices_count){
-                    float r00=data[offset+z]*(1.0f-deltax)*(1.0f-deltay);
-                    float r01=data[offset+slices_count+z]*(1.0f-deltax)*deltay;
-                    float r10=data[offset+slices_count*im_size+z]*deltax*(1.0f-deltay);
-                    float r11=data[offset+(im_size+1)*slices_count+z]*deltax*deltay;
-                    res[(x*im_size+y)*slices_count+z]= r00+r01+r10+r11;
+                    float r00 = data[offset+z]*(1.0f-deltax)*(1.0f-deltay);
+                    float r01 = data[offset+slices_count+z]*(1.0f-deltax)*deltay;
+                    float r10 = data[offset+slices_count*im_size+z]*deltax*(1.0f-deltay);
+                    float r11 = data[offset+(im_size+1)*slices_count+z]*deltax*deltay;
+                    res[res_offset+z]= r00+r01+r10+r11;
                 }
             }else{
                 foreach(z=0 ... slices_count){
-                    res[(x*im_size+y)*slices_count+z]=0.0;
+                    res[res_offset+z]=0.0;
                 }
             }
         }
