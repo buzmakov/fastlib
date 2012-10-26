@@ -1,15 +1,28 @@
+# coding=utf-8
+"""
+This file used for mass benchmaking different realisations of image processing functions/
+"""
+
+import time
+from itertools import groupby
+
+import numpy
+import pylab
+
 import fastlib.imageprocessing.ocv as ocv
 import fastlib.imageprocessing.opencl as opencl
 import fastlib.imageprocessing.ispmd as ispmd
 import fastlib.imageprocessing.reference_implementation as ref
 import fastlib.utils.phantom as phantom
-import time
-import numpy
-import pylab
-from itertools import groupby
 
 
 def bencmark_projection(sizes):
+    """
+    Benchmark 'project' function
+
+    :param sizes:
+    :return:
+    """
     bencmark_res = {}
     counts = 100
     functions = {'ocv.project': ocv.project,
@@ -32,6 +45,12 @@ def bencmark_projection(sizes):
 
 
 def bencmark_backprojection(sizes):
+    """
+    Benchmark 'backproject' function.
+
+    :param sizes:
+    :return:
+    """
     bencmark_res = {}
     counts = 10
     functions = {'ocv.back_project': ocv.back_project,
@@ -53,6 +72,13 @@ def bencmark_backprojection(sizes):
 
 
 def bencmark_rotation(sizes, angles):
+    """
+    Benchmark 'rotate' function.
+
+    :param sizes:
+    :param angles:
+    :return:
+    """
     bencmark_res = {}
     counts = 10
     functions = {'ocv.rotate_square': ocv.rotate_square,
@@ -76,6 +102,11 @@ def bencmark_rotation(sizes, angles):
 
 
 def visualize_rotation_bench(res):
+    """
+    Visulise rotetion benchmark.
+
+    :param res:
+    """
     visualize_1d_bench(res, 'Rotation_benchmark')
 
     pylab.figure()
@@ -97,6 +128,12 @@ def visualize_rotation_bench(res):
 
 
 def visualize_1d_bench(res, title):
+    """
+    Visulize 1-d benchmarks.
+
+    :param res:
+    :param title:
+    """
     pylab.figure()
     print title
     for func_name in res:

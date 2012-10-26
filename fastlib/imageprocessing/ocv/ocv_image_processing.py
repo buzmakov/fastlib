@@ -1,3 +1,4 @@
+# coding=utf-8
 import cv2
 import numpy
 
@@ -5,7 +6,7 @@ import numpy
 def cv_rotate_sq(x, angle):
     """
     Rotate square array using OpenCV2 around center of the array
-    :param x: numpy array
+    :param x: 2d square numpy array
     :param angle: angle in degrees
     :return: rotated array
     """
@@ -17,7 +18,7 @@ def cv_rotate_sq(x, angle):
 def cv_rotate(x, angle):
     """
     Rotate square array using OpenCV2 around center of the array
-    :param x: numpy array
+    :param x: 2d numpy array
     :param angle: angle in degrees
     :return: rotated array
     """
@@ -28,10 +29,22 @@ def cv_rotate(x, angle):
 
 
 def cv_project(src):
+    """
+    Project 2D array to 1D array
+
+    :param src: 2d numpy array.
+    :return:
+    """
     return numpy.squeeze(cv2.reduce(src, dim=1, rtype=cv2.cv.CV_REDUCE_SUM))
 
 
 def cv_backproject(src):
+    """
+    Back project 1d array to 2d array.
+
+    :param src: 1d numpy array
+    :return:
+    """
     ntimes = len(src)
     tmp_array = src / float(ntimes)
     return cv2.repeat(tmp_array,1,ntimes)

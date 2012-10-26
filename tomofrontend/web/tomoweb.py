@@ -16,6 +16,7 @@ app.config['TOMO_CONTAINER'] = tc
 def index():
     """
     Render start page
+
     :return:
     """
     return render_template('index.html')
@@ -25,6 +26,7 @@ def index():
 def favicon():
     """
     Return favicon
+
     :return:
     """
     return send_from_directory(os.path.join(app.root_path, 'static', 'ico'),
@@ -34,6 +36,7 @@ def favicon():
 def tomo_experiments():
     """
     Render page with list of tomo experiments
+
     :return:
     """
     app.config['TOMO_CONTAINER'].update_objects_status()
@@ -47,6 +50,7 @@ def tomo_experiments():
 def tomo_info(tomo_object_id):
     """
     Render information page
+
     :param tomo_object_id:
     :return:
     """
@@ -63,6 +67,7 @@ def tomo_info(tomo_object_id):
 def tomo_process(tomo_object_id):
     """
     Render page for tomograthic processing
+
     :param tomo_object_id:
     :return:
     """
@@ -78,6 +83,7 @@ def tomo_process(tomo_object_id):
 def tomo_result(tomo_object_id):
     """
     Render page for tomograthic results
+
     :param tomo_object_id:
     :return:
     """
@@ -93,6 +99,7 @@ def tomo_result(tomo_object_id):
 def get_result_file(tomo_object_id):
     """
     Get result file by tomo_object_id. File name passed in 'fname' argument of HTTP-request.
+
     :param tomo_object_id:
     :return:
     """
@@ -117,6 +124,7 @@ def get_result_file(tomo_object_id):
 def tomo_log(tomo_object_id):
     """
     Return tomographi reconstruction log. Used in AJAX-mode.
+
     :param tomo_object_id:
     :return:
     """
@@ -131,6 +139,7 @@ def tomo_log(tomo_object_id):
 def tomo_reconstruct(tomo_object_id):
     """
     Start tomo reconstruction or image processing.
+
     :param tomo_object_id:
     :return:
     """
