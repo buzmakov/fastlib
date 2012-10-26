@@ -1,15 +1,18 @@
+__author__ = 'makov'
+
 import os
 import sys
+import time
+
+import numpy
 
 root_dir = os.path.join(os.path.dirname(__file__), '..', '..', '..')
 sys.path.insert(0, root_dir)
 
-__author__ = 'makov'
 from fastlib.imageprocessing.ispmd import rotate_square, project
 from fastlib.tomography.sart import sart
-import numpy
 from fastlib.utils.phantom import modified_shepp_logan
-import time
+
 
 
 def genrate_sinogam_ref(image, angles):
@@ -28,6 +31,7 @@ def test_sart():
     x = numpy.array(x)
     sinogram, angles = genrate_sinogam_ref(x, angles)
     t = time.time()
+    res=None
     for i in range(32):
         res = sart(sinogram, angles)
     print 'Tomographic reconstruction: ' + str(time.time() - t)

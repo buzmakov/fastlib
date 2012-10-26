@@ -1,3 +1,4 @@
+# coding=utf-8
 import numpy
 from fastlib.imageprocessing.ispmd import project, rotate_square_ref, back_project_ref, add_ref
 
@@ -6,6 +7,13 @@ __author__ = 'makov'
 
 
 def sart(sinogram, angles):
+    """
+    SART tomography reconstruction.
+
+    :param sinogram: 2d array (s[:,i] - i-th projection)
+    :param angles:  1d array of angles
+    :return:
+    """
     reconst_shape = numpy.array(sinogram.shape[0], dtype='int32')
 #    #normalize sinograms
 #    sinogram *= numpy.mean(sinogram.sum(axis=0)) / sinogram.sum(axis=0)
