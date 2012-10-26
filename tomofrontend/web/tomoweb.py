@@ -12,26 +12,30 @@ tc = TomoContainer()
 tc.load_tomo_objects(app.config['TOMO_ROOT'])
 app.config['TOMO_CONTAINER'] = tc
 
-
 @app.route('/')
 def index():
+    """
+    Render start page
+    :return:
+    """
     return render_template('index.html')
 
 
 @app.route('/favicon.ico')
 def favicon():
+    """
+    Return favicon
+    :return:
+    """
     return send_from_directory(os.path.join(app.root_path, 'static', 'ico'),
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
-
-@app.route('/hello/')
-@app.route('/hello/<name>')
-def hello(name=None):
-    return render_template('base.html', name=name)
-
-
 @app.route('/tomo_experiments/')
 def tomo_experiments():
+    """
+    Render page with list of tomo experiments
+    :return:
+    """
     app.config['TOMO_CONTAINER'].update_objects_status()
     app.config['TOMO_CONTAINER'].load_tomo_objects(app.config['TOMO_ROOT'])
     tmp_to = [v for (k, v) in app.config['TOMO_CONTAINER'].tomo_objects.items()]
@@ -41,6 +45,11 @@ def tomo_experiments():
 
 @app.route('/tomo_experiments/info/<tomo_object_id>')
 def tomo_info(tomo_object_id):
+    """
+    Render information page
+    :param tomo_object_id:
+    :return:
+    """
     app.config['TOMO_CONTAINER'].update_objects_status()
     if tomo_object_id in app.config['TOMO_CONTAINER'].tomo_objects:
         to = app.config['TOMO_CONTAINER'].tomo_objects[tomo_object_id]
@@ -52,6 +61,11 @@ def tomo_info(tomo_object_id):
 
 @app.route('/tomo_experiments/process/<tomo_object_id>')
 def tomo_process(tomo_object_id):
+    """
+    Render page for tomograthic processing
+    :param tomo_object_id:
+    :return:
+    """
     app.config['TOMO_CONTAINER'].update_objects_status()
     if tomo_object_id in app.config['TOMO_CONTAINER'].tomo_objects:
         to = app.config['TOMO_CONTAINER'].tomo_objects[tomo_object_id]
@@ -62,6 +76,11 @@ def tomo_process(tomo_object_id):
 
 @app.route('/tomo_experiments/results/<tomo_object_id>')
 def tomo_result(tomo_object_id):
+    """
+    Render page for tomograthic results
+    :param tomo_object_id:
+    :return:
+    """
     app.config['TOMO_CONTAINER'].update_objects_status()
     if tomo_object_id in app.config['TOMO_CONTAINER'].tomo_objects:
         to = app.config['TOMO_CONTAINER'].tomo_objects[tomo_object_id]
@@ -72,6 +91,11 @@ def tomo_result(tomo_object_id):
 
 @app.route('/tomo_experiments/file/<tomo_object_id>')
 def get_result_file(tomo_object_id):
+    """
+    Get result file by tomo_object_id. File name passed in 'fname' argument of HTTP-request.
+    :param tomo_object_id:
+    :return:
+    """
     filename = request.args.get('fname')
 
     if tomo_object_id in app.config['TOMO_CONTAINER'].tomo_objects:
@@ -91,6 +115,11 @@ def get_result_file(tomo_object_id):
 
 @app.route('/tomo_experiments/log/<tomo_object_id>')
 def tomo_log(tomo_object_id):
+    """
+    Return tomographi reconstruction log. Used in AJAX-mode.
+    :param tomo_object_id:
+    :return:
+    """
     if tomo_object_id in app.config['TOMO_CONTAINER'].tomo_objects:
         to = app.config['TOMO_CONTAINER'].tomo_objects[tomo_object_id]
         return jsonify(log=to.get_log())
@@ -100,10 +129,11 @@ def tomo_log(tomo_object_id):
 
 @app.route('/tomo_experiments/reconstruct/<tomo_object_id>')
 def tomo_reconstruct(tomo_object_id):
-#    if tomo_object_id in app.config['TOMO_CONTAINER'].tomo_objects:
-#        to=app.config['TOMO_CONTAINER'].tomo_objects[tomo_object_id]
-#    else:
-#        return 'Object NOT found.'
+    """
+    Start tomo reconstruction or image processing.
+    :param tomo_object_id:
+    :return:
+    """
     just_preprocess = False
     if 'just_preprocess' in request.args:
         if request.args['just_preprocess'] == 'True':
