@@ -2,14 +2,14 @@
 """
 This file should provide function build_universal_config(config_dir) to build  config from dir.
 """
+import logging
 import glob
 import os
+
 from tomofrontend.configutils.universalconfig import UniversalConfigBuilder
-from utils.natsort import natsorted
 import tomofrontend.configutils.yamlutils as yamlutils
+from utils.natsort import natsorted
 from utils.dictutils import get_value, try_get_value
-#from utils.mypprint import pprint
-import logging
 
 __author__ = 'makov'
 
@@ -72,13 +72,17 @@ def get_files_in_group(group, root='.', start_data_angle=0):
                     for ef, f in enumerate(tmp_files_names_list):
                         if type_key == 'data':
                             angle = start_data_angle + delta_angle * ((ef - ef % frames_per_angle) / frames_per_angle)
-                            stop_data_angle = start_data_angle + delta_angle * (((ef + 1) - (ef + 1) % frames_per_angle) / frames_per_angle)
+                            stop_data_angle = start_data_angle + \
+                                          delta_angle * (((ef + 1) - (ef + 1) % frames_per_angle) / frames_per_angle)
                         else:
                             angle = 0
+
                         td = {'name': f, 'angle': angle, 'exposure_time': exp_time, 'type': type_key,
                               'rotation_angle': rotation_angle, 'image_format': image_format}
                         tmp_files_list.append(td)
+
                     files.extend(tmp_files_list)
+
     return files, stop_data_angle
 
 
@@ -90,17 +94,16 @@ def build_universal_config(config_dir):
     :raise:
     """
     config_yaml_filename = os.path.join(config_dir, 'exp_description.yaml')
-    res = yamlutils.read_yaml(config_yaml_filename)[0]
-    #    pprint(res)
+    tomo_config = yamlutils.read_yaml(config_yaml_filename)[0]
 
-    if not 'frames' in res:
+    if not 'frames' in tomo_config:
         logging.error(str.format('Section FRAMES not found in config file {0}', config_yaml_filename))
         raise AttributeError
     uc = UniversalConfigBuilder()
     #TODO: fix this hack
-    uc.add_section({'preprocess_config': res['preprocess_config']})
-    uc.add_section({'description': res['description']})
-    groups = get_groups(res['frames'])
+    uc.add_section({'preprocess_config': tomo_config['preprocess_config']})
+    uc.add_section({'description': tomo_config['description']})
+    groups = get_groups(tomo_config['frames'])
     start_data_angle = 0
     for group_name in natsorted(groups.keys()):
         group = groups[group_name]
