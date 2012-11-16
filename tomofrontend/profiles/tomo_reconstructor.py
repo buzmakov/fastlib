@@ -1,6 +1,20 @@
 #encoding: utf-8
 import sys
 import os
+import itertools
+import multiprocessing
+import optparse
+import warnings
+import time
+import logging
+
+import pylab
+import numpy
+import h5py
+import cv2
+import scipy.ndimage
+import scipy.ndimage.measurements
+
 root_dir = os.path.join(os.path.dirname(__file__), '..', '..')
 sys.path.insert(0, root_dir)
 
@@ -11,21 +25,7 @@ from utils.natsort import natsorted
 from utils.mylogger import set_logger, add_logging_file
 from tomofrontend.configutils.yamlutils import read_yaml
 
-
-import itertools
-import multiprocessing
-import optparse
-import cv2
-import warnings
-import numpy
-import time
-import logging
-import pylab
-import h5py
-import scipy.ndimage
-import scipy.ndimage.measurements
 warnings.filterwarnings("ignore", category=Warning)
-
 
 __author__ = 'makov'
 
