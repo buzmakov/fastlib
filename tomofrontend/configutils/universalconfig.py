@@ -1,12 +1,18 @@
+# coding=utf-8
 import os
-import pprint
-
-__author__ = 'makov'
 import logging
 import yamlutils
 
+__author__ = 'makov'
 
-class UniversalConfigBuilder:
+
+class UniversalConfigBuilder(object):
+    """
+    This class build Universal config which contain unified fields for every frame and may consist some custom sections.
+    """
+
+    #TODO: add reader???
+
     def __init__(self):
         self.frames_info = {}
         self.custom_fields = {}
@@ -38,7 +44,7 @@ class UniversalConfigBuilder:
             logging.warning(str.format('frame type unknown: {0}', frame['frame_type']))
         self.frames_info[group_name].append(frame)
 
-#        pprint.pprint(self.frames_info)
+    #        pprint.pprint(self.frames_info)
 
     def add_section(self, custom_dict):
         if type(custom_dict) == dict:

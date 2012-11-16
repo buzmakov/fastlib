@@ -5,11 +5,7 @@ This file should provide function build_universal_config(config_dir) to build  c
 import glob
 import os
 from tomofrontend.configutils.universalconfig import UniversalConfigBuilder
-from tomofrontend.profiles.amur_config import get_groups, get_files_in_group
-from utils.natsort import natsorted
 import tomofrontend.configutils.yamlutils as yamlutils
-from utils.dictutils import get_value, try_get_value
-#from utils.mypprint import pprint
 import logging
 
 __author__ = 'makov'
@@ -23,16 +19,15 @@ def build_universal_config(config_dir):
     :raise:
     """
     config_yaml_filename = os.path.join(config_dir, 'exp_description.yaml')
-    res = yamlutils.read_yaml(config_yaml_filename)[0]
-    #    pprint(res)
+    tomo_config = yamlutils.read_yaml(config_yaml_filename)[0]
 
-    if not 'frames' in res:
+    if not 'frames' in tomo_config:
         logging.error(str.format('Section FRAMES not found in config file {0}', config_yaml_filename))
         raise AttributeError
     uc = UniversalConfigBuilder()
     #TODO: fix this hack
-    uc.add_section({'preprocess_config': res['preprocess_config']})
-    uc.add_section({'description': res['description']})
+    uc.add_section({'preprocess_config': tomo_config['preprocess_config']})
+    uc.add_section({'description': tomo_config['description']})
     data_dir = os.path.join(config_dir, 'Data')
     files = glob.glob(os.path.join(data_dir, '*.tif'))
     for f_path in sorted(files):

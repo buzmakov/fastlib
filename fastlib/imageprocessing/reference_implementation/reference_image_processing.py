@@ -1,3 +1,4 @@
+# coding=utf-8
 __author__ = 'makov'
 
 import numpy
@@ -5,7 +6,7 @@ import scipy.ndimage
 
 
 def project(src):
-    '''
+    """
     Project 2D array for parallel case (summing along rows)
 
     src=numpy.array([[ 0.,  1.,  2.],
@@ -17,7 +18,7 @@ def project(src):
 
     :param src: 2D numpy array
     :return:
-    '''
+    """
     return numpy.sum(src, axis=-1, dtype='float32')
 
 

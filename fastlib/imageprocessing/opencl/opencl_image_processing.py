@@ -1,3 +1,4 @@
+# coding=utf-8
 __author__ = 'makov'
 import numpy
 import pyopencl as cl
@@ -19,6 +20,12 @@ project_prg = cl.Program(ctx, """
 
 
 def project(src):
+    """
+    Project 2d numpy array.
+
+    :param src:
+    :return:
+    """
     stride = src.shape[0]
     res = numpy.zeros(stride, dtype='float32')
 

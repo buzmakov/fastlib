@@ -1,12 +1,28 @@
+# coding=utf-8
 __author__ = 'makov'
 import numpy
 import scipy.ndimage
 
 
+def cov(x, y):
+    """
+    Covariance.
+
+    :param x:
+    :param y:
+    :return:
+    """
+    return scipy.ndimage.measurements.mean(x * y) -\
+           scipy.ndimage.measurements.mean(x) * scipy.ndimage.measurements.mean(y)
+
 def SSIM(x, y):
-    def cov(x, y):
-        return scipy.ndimage.measurements.mean(x * y) -\
-            scipy.ndimage.measurements.mean(x) * scipy.ndimage.measurements.mean(y)
+    """
+    SSIM.
+
+    :param x:
+    :param y:
+    :return:
+    """
     sigma_x = scipy.ndimage.measurements.variance(x)
     sigma_y = scipy.ndimage.measurements.variance(y)
     mean_x = scipy.ndimage.measurements.mean(x)
@@ -19,6 +35,15 @@ def SSIM(x, y):
 
 
 def MSSIM(x, y, block_size=8):
+    """
+    MeanSSIM.
+
+    :param x:
+    :param y:
+    :param block_size:
+    :return:
+    :raise:
+    """
     if x.shape != y.shape:
         raise Exception("Input arrays must be equal shape")
     if x.shape[0] != x.shape[1]:

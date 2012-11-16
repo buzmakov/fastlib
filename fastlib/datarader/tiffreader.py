@@ -1,3 +1,4 @@
+# coding=utf-8
 """
 Module for reading frame from TIFF file. (Podurets format)
 """

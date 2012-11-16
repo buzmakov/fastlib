@@ -1,17 +1,19 @@
 import UserDict
 import sys
 import os
-root_dir = os.path.join(os.path.dirname(__file__), '..', '..')
-sys.path.insert(0, root_dir)
-from utils.mypprint import pformat
-from tomofrontend.profiles.tomo_reconstructor import do_tomo_reconstruction
 import multiprocessing
 import Queue
 import datetime
 import uuid
-from tomofrontend.configutils.yamlutils import read_yaml
 import glob
+
+root_dir = os.path.join(os.path.dirname(__file__), '..', '..')
+sys.path.insert(0, root_dir)
+from utils.mypprint import pformat
 from utils.natsort import natsorted
+from tomofrontend.profiles.tomo_reconstructor import do_tomo_reconstruction
+from tomofrontend.configutils.yamlutils import read_yaml
+
 
 __author__ = 'makov'
 

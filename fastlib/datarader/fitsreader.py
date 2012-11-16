@@ -1,3 +1,4 @@
+# coding=utf-8
 """
 Module for reading frame from FITS file. (FIAN format)
 """
@@ -12,7 +13,7 @@ import logging
 
 def get_frame_from_file(file_path):
     """
-    Get array from fits file
+    Get array from fits file (FIAN dialect :) )
 
     :param file_path: Path to fits file
     :return: numpy array of float32

@@ -1,6 +1,6 @@
 __author__ = 'makov'
-import tomofrontend.configutils.yamlutils as yamlutils
 
+import tomofrontend.configutils.yamlutils as yamlutils
 from utils.mypprint import pprint
 
 

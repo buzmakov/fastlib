@@ -1,7 +1,8 @@
-cimport numpy
+# coding=utf-8
 import numpy
 import cython
-cimport cython
+cimport numpy
+#cimport cython
 from fastlib.imageprocessing.ispmd import project,rotate_square,back_project
 
 __author__ = 'makov'

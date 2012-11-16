@@ -1,6 +1,5 @@
 # coding=utf-8
-# coding=utf-8
-#encodnig: utf-8
+
 __author__ = 'makov'
 import logging
 import os
