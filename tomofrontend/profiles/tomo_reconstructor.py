@@ -429,7 +429,7 @@ def find_shift_and_rotation(data0, data1, image_process_config, res_folder=None)
             break
 
         xc = shift_val
-        ac = rot_ang
+        ac = float(rot_ang)
 
         logging.info(str.format('x={0} delta_x={1} ac={2:.3} delta_a={3:.3} angle_step={4:.3}',
                                 xc, delta_x, ac, delta_a, angle_step))
