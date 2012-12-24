@@ -8,6 +8,7 @@
         <thead>
             <tr>
                 <th>Дата</th>
+                <th>Название</th>
                 <th>Путь к данным</th>
                 <th>Информация об объекте</th>
                 <th>Восстановлен?</th>
@@ -18,6 +19,7 @@
             {% for to in tomo_objects %}
                     <tr>
                         <td nowrap>{{to['config']['description']['date']['start'] }}</td>
+                        <td>{{ to['config']['description']['sample'] }}</td>
                         <td>{{to['data_dir']}}
                         <td>
                             <a href="{{ url_for('tomo_info',tomo_object_id=to['id']) }}">
