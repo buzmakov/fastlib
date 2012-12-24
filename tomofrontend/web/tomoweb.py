@@ -6,7 +6,7 @@ from web_utils import TomoContainer
 __author__ = 'makov'
 
 app = Flask(__name__)
-app.config['TOMO_ROOT'] = r'/home/makov/tmp/tomo_root/Raw'
+app.config['TOMO_ROOT'] = r'/home/tomo/tomo_data'
 
 tc = TomoContainer()
 tc.load_tomo_objects(app.config['TOMO_ROOT'])
