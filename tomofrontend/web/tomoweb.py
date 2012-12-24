@@ -42,7 +42,7 @@ def tomo_experiments():
     app.config['TOMO_CONTAINER'].update_objects_status()
     app.config['TOMO_CONTAINER'].load_tomo_objects(app.config['TOMO_ROOT'])
     tmp_to = [v for (k, v) in app.config['TOMO_CONTAINER'].tomo_objects.items()]
-    tmp_to = sorted(tmp_to, key=lambda x: x['data_dir'])
+    tmp_to = sorted(tmp_to, key=lambda x: x['config']['description']['date']['start'])
     return render_template('tomo_dirs.html', tomo_objects=tmp_to)
 
 
