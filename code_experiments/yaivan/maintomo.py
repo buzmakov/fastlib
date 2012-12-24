@@ -294,7 +294,7 @@ if __name__ == "__main__":
     set_logger()
     pylab.figure()
 
-    config_file_dir = ('data/mysimogram3_shift')
+    config_file_dir = ('data/mysinogram3')
     tr = Reconstructor(config_file_dir)
     tr.reconstruct(mode='parallel')
     #tr.reconstruct(mode='sphere')
