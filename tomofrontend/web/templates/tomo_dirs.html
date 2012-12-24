@@ -10,6 +10,7 @@
                 <th>Путь к данным</th>
                 <th>Информация об объекте</th>
                 <th>Восстановлен?</th>
+                <th>Теги</th>
             </tr>
         </thead>
         <tbody>
@@ -26,6 +27,9 @@
                                 {{ 'Да' if to.is_reconstructed() else 'Нет'}}
                             </a>
                         </td>
+                    <td>
+                        {{ ', '.join(to['config']['description']['tags']) }}
+                    </td>
                     </tr>
             {% endfor %}
         </tbody>
