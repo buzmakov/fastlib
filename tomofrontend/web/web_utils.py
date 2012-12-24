@@ -36,11 +36,15 @@ class TomoContainer():
                 tmp_dir = dirpath.replace(tomo_root, '', 1)
                 if tmp_dir[0] == r'/':
                     tmp_dir = tmp_dir[1:]
-                to = TomoObject(base_dir=tomo_root, data_dir=tmp_dir)
+                try:
+                    to = TomoObject(base_dir=tomo_root, data_dir=tmp_dir)
+                except IOError:  # if error in reading config
+                    break
                 if not to['id'] in self.tomo_objects:
                     to.update_status('Object added to container')
                     self.append(to)
                 else:
+                    #if tomo_object exist - reload config
                     self.tomo_objects[to['id']].load_tomo_config()
 
     def add_to_reconstruction_queue(self, id, just_preprocess=False):
