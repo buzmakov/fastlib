@@ -41,7 +41,7 @@ class TomoContainer():
                     to.update_status('Object added to container')
                     self.append(to)
                 else:
-                    del to
+                    self.tomo_objects[to['id']].load_tomo_config()
 
     def add_to_reconstruction_queue(self, id, just_preprocess=False):
         self.update_objects_status()
