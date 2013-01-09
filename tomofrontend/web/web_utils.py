@@ -160,13 +160,16 @@ class TomoObject(UserDict.UserDict):
         return natsorted(file_list)
 
     def get_userdata_files(self):
-        ud = {'video': [], 'images': [], 'amira':[]}
+        ud = {'video': [], 'image': [], 'amira':[]}
         video_ext = ['mkv', 'mpg', 'avi']
         for ve in video_ext:
             ud['video'].extend(self.get_files_list(os.path.join('userdata', '*.' + ve)))
         amira_ext = ['hx']
         for ae in amira_ext:
             ud['amira'].extend(self.get_files_list(os.path.join('userdata', '*.' + ae)))
+        image_ext = ['jpg', 'jpeg', 'png', 'tif', 'tiff']
+        for ie in image_ext:
+            ud['image'].extend(self.get_files_list(os.path.join('userdata', '*.' + ie)))
         return ud
 
     @staticmethod

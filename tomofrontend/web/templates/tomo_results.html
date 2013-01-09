@@ -37,7 +37,9 @@
                 <li><a href="#images_y" data-toggle="tab">Images Y</a></li>
                 <li><a href="#images_z" data-toggle="tab">Images Z</a></li>
                 <li><a href="#videos" data-toggle="tab">Video files</a></li>
+                <li><a href="#images_user" data-toggle="tab">Custom images</a></li>
                 <li><a href="#amira" data-toggle="tab">Custom amira files</a></li>
+
 
             </ul>
 
@@ -124,13 +126,26 @@
 
                     </div>
                 </div>
+
+                <div class="tab-pane fade" id="images_user">
+                    <div class="row">
+                        {% for f in tomo_object.get_userdata_files()['image']  %}
+                            <div class="span6">
+                                <a href="{{ url_for('get_file', tomo_object_id= tomo_object['id']) }}?fname={{ f }}">
+                                    {{ f }}
+                                </a>
+                                <img src="{{ url_for('get_file', tomo_object_id= tomo_object['id']) }}?fname={{ f }}"/>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
                 <div class="tab-pane fade" id="amira">
                     <div class="row">
                         {% for f in tomo_object.get_userdata_files()['amira']  %}
                             <div class="span6">
                                 <a href="{{ url_for('get_file', tomo_object_id= tomo_object['id']) }}?fname={{ f }}">
                                     {{ f }}
-                            </a>
+                                </a>
                             </div>
                         {% endfor %}
                     </div>
