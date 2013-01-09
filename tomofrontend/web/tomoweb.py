@@ -98,7 +98,7 @@ def tomo_result(tomo_object_id):
 
 
 @app.route('/tomo_experiments/file/<tomo_object_id>')
-def get_result_file(tomo_object_id):
+def get_file(tomo_object_id):
     """
     Get result file by tomo_object_id. File name passed in 'fname' argument of HTTP-request.
 
