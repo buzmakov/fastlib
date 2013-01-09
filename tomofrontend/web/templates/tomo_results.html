@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Результаты реконструкции{% endblock %}
 {% block body %}
-    <div class="container">
+    <div class="container" xmlns="http://www.w3.org/1999/html">
         <header class="jumbotron subhead" id="overview">
 
             <p class="lead">
@@ -36,6 +36,10 @@
                 <li><a href="#images_x" data-toggle="tab">Images X</a></li>
                 <li><a href="#images_y" data-toggle="tab">Images Y</a></li>
                 <li><a href="#images_z" data-toggle="tab">Images Z</a></li>
+                <li><a href="#videos" data-toggle="tab">Video files</a></li>
+                <li><a href="#images_user" data-toggle="tab">Custom images</a></li>
+                <li><a href="#amira" data-toggle="tab">Custom amira files</a></li>
+
 
             </ul>
 
@@ -45,22 +49,22 @@
                         <label> Получить файлы</label>
                         <ul>
                             <li>
-                                <a href="{{ url_for('get_result_file', tomo_object_id= tomo_object['id']) }}?fname=reconstruction/postproc_data.h5">
+                                <a href="{{ url_for('get_file', tomo_object_id= tomo_object['id']) }}?fname=reconstruction/postproc_data.h5">
                                     HDF5 файл с  предобработанными данными
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ url_for('get_result_file', tomo_object_id= tomo_object['id']) }}?fname=reconstruction/result.hdf5">
+                                <a href="{{ url_for('get_file', tomo_object_id= tomo_object['id']) }}?fname=reconstruction/result.hdf5">
                                     HDF5 файл с результатом
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ url_for('get_result_file', tomo_object_id= tomo_object['id']) }}?fname=reconstruction/amira.raw">
+                                <a href="{{ url_for('get_file', tomo_object_id= tomo_object['id']) }}?fname=reconstruction/amira.raw">
                                     Бинарный файл AMIRA
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ url_for('get_result_file', tomo_object_id= tomo_object['id']) }}?fname=reconstruction/tomo.hx">
+                                <a href="{{ url_for('get_file', tomo_object_id= tomo_object['id']) }}?fname=reconstruction/tomo.hx">
                                     HX файл AMIRA
                                 </a>
                             </li>
@@ -73,7 +77,7 @@
                         {% for f in tomo_object.get_files_list('reconstruction/images/x_*.png') %}
                         <div class="span6">
                             <h3>{{ f }}</h3>
-                            <img src="{{ url_for('get_result_file', tomo_object_id= tomo_object['id']) }}?fname={{ f }}"/>
+                            <img src="{{ url_for('get_file', tomo_object_id= tomo_object['id']) }}?fname={{ f }}"/>
                         </div>
                         {% endfor %}
                     </div>
@@ -84,7 +88,7 @@
                         {% for f in tomo_object.get_files_list('reconstruction/images/y_*.png') %}
                             <div class="span6">
                                 <h3>{{ f }}</h3>
-                                <img src="{{ url_for('get_result_file', tomo_object_id= tomo_object['id']) }}?fname={{ f }}"/>
+                                <img src="{{ url_for('get_file', tomo_object_id= tomo_object['id']) }}?fname={{ f }}"/>
                             </div>
                         {% endfor %}
                     </div>
@@ -95,7 +99,53 @@
                         {% for f in tomo_object.get_files_list('reconstruction/images/z_*.png') %}
                             <div class="span6">
                                 <h3>{{ f }}</h3>
-                                <img src="{{ url_for('get_result_file', tomo_object_id= tomo_object['id']) }}?fname={{ f }}"/>
+                                <img src="{{ url_for('get_file', tomo_object_id= tomo_object['id']) }}?fname={{ f }}"/>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="videos">
+                    <div class="row">
+                        {% for f in tomo_object.get_userdata_files()['video'] %}
+                            <div class="span12">
+                                <a href="{{ url_for('get_file', tomo_object_id= tomo_object['id']) }}?fname={{ f }}">{{ f }} </a>
+                            </div>
+                            {% if f.split('.')[-1]== 'mkv' %}
+                                <div class="span12">
+                                    <video class="video-js vjs-default-skin" controls preload="auto" width="640" height="480" data-setup="{}">
+                                        <source src="{{ url_for('get_file', tomo_object_id= tomo_object['id']) }}?fname={{ f }}" type='video/mp4'>
+                                    </video>
+                                </div>
+                            {% endif %}
+
+                        {% endfor %}
+
+                        <div class="span12">
+                            <p>Для конвертирования файлов в проигрываемый формат используйте: ffmpeg -i file_name.mpg  -sameq -vcodec libx264 -acodec copy  -crf 23 file_name.mkv</p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="images_user">
+                    <div class="row">
+                        {% for f in tomo_object.get_userdata_files()['image']  %}
+                            <div class="span6">
+                                <a href="{{ url_for('get_file', tomo_object_id= tomo_object['id']) }}?fname={{ f }}">
+                                    {{ f }}
+                                </a>
+                                <img src="{{ url_for('get_file', tomo_object_id= tomo_object['id']) }}?fname={{ f }}"/>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="amira">
+                    <div class="row">
+                        {% for f in tomo_object.get_userdata_files()['amira']  %}
+                            <div class="span6">
+                                <a href="{{ url_for('get_file', tomo_object_id= tomo_object['id']) }}?fname={{ f }}">
+                                    {{ f }}
+                                </a>
                             </div>
                         {% endfor %}
                     </div>
@@ -107,4 +157,6 @@
 {% endblock%}
 
 {% block my_scripts %}
+    <link href="video-js/video-js.css" rel="stylesheet">
+    <script src="video-js/video.js"></script>
 {% endblock %}

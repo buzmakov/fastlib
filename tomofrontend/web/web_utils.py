@@ -7,6 +7,7 @@ import datetime
 import uuid
 import glob
 
+
 root_dir = os.path.join(os.path.dirname(__file__), '..', '..')
 sys.path.insert(0, root_dir)
 from utils.mypprint import pformat
@@ -158,10 +159,31 @@ class TomoObject(UserDict.UserDict):
         file_list = [x[len(full_path) + 1:] for x in file_list if x.find(full_path) == 0 if os.path.isfile(x)]
         return natsorted(file_list)
 
+    def get_userdata_files(self):
+        ud = {'video': [], 'image': [], 'amira':[]}
+        video_ext = ['mkv', 'mpg', 'avi']
+        for ve in video_ext:
+            ud['video'].extend(self.get_files_list(os.path.join('userdata', '*.' + ve)))
+        amira_ext = ['hx']
+        for ae in amira_ext:
+            ud['amira'].extend(self.get_files_list(os.path.join('userdata', '*.' + ae)))
+        image_ext = ['jpg', 'jpeg', 'png', 'tif', 'tiff']
+        for ie in image_ext:
+            ud['image'].extend(self.get_files_list(os.path.join('userdata', '*.' + ie)))
+        return ud
+
     @staticmethod
     def is_tomo_dir(dirpath, dirnames, filenames):
         if 'original' in dirnames:
-            return True
+            if os.path.exists(os.path.join(dirpath, 'original', 'exp_description.yaml')):
+                user_data_folder = os.path.join(dirpath, 'userdata')
+                if not os.path.exists(user_data_folder):
+                    os.mkdir(user_data_folder, 0644)
+                return True
+            else:
+                return False
+        else:
+            return False
 
 if __name__ == "__main__":
     pass
