@@ -179,7 +179,7 @@ class TomoObject(UserDict.UserDict):
                 user_data_folder = os.path.join(dirpath, 'userdata')
                 if not os.path.exists(user_data_folder):
                     try:
-                        os.mkdir(user_data_folder, 0664)
+                        os.mkdir(user_data_folder)
                     except OSError:
                         pass
                 return True
