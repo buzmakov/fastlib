@@ -178,7 +178,10 @@ class TomoObject(UserDict.UserDict):
             if os.path.exists(os.path.join(dirpath, 'original', 'exp_description.yaml')):
                 user_data_folder = os.path.join(dirpath, 'userdata')
                 if not os.path.exists(user_data_folder):
-                    os.mkdir(user_data_folder, 0644)
+                    try:
+                        os.mkdir(user_data_folder, 0644)
+                    except OSError:
+                        pass
                 return True
             else:
                 return False
