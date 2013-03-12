@@ -3,6 +3,10 @@
 This file used for mass benchmaking different realisations of image processing functions/
 """
 
+import matplotlib
+# Force matplotlib to not use any Xwindows backend.
+matplotlib.use('Agg')
+
 import time
 from itertools import groupby
 

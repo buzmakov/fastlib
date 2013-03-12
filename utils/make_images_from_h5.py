@@ -1,4 +1,9 @@
 # coding=utf-8
+
+import matplotlib
+# Force matplotlib to not use any Xwindows backend.
+matplotlib.use('Agg')
+
 import os
 import h5py
 import pylab

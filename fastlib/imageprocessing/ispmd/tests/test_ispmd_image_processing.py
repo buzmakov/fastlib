@@ -1,3 +1,7 @@
+import matplotlib
+# Force matplotlib to not use any Xwindows backend.
+matplotlib.use('Agg')
+
 from fastlib.imageprocessing import ocv
 
 __author__ = 'makov'
