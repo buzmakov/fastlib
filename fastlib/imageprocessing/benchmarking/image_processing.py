@@ -14,7 +14,7 @@ import numpy
 import pylab
 
 import fastlib.imageprocessing.ocv as ocv
-import fastlib.imageprocessing.opencl as opencl
+#import fastlib.imageprocessing.opencl as opencl
 import fastlib.imageprocessing.ispmd as ispmd
 import fastlib.imageprocessing.reference_implementation as ref
 import fastlib.utils.phantom as phantom
@@ -32,7 +32,8 @@ def bencmark_projection(sizes):
     functions = {'ocv.project': ocv.project,
                  'ispmd.project': ispmd.project,
                  'ref.project': ref.project,
-                 'opencl.project': opencl.project}
+                 #'opencl.project': opencl.project
+                 }
     for size in sizes:
         x = phantom.modified_shepp_logan((size, size, 3))[:, :, 1]
         x = numpy.array(x)
