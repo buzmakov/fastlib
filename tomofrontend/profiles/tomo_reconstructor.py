@@ -11,6 +11,7 @@ import optparse
 import warnings
 import time
 import logging
+import traceback
 
 import pylab
 import numpy
@@ -684,13 +685,17 @@ def do_tomo_reconstruction(data_root, tomo_profile=None, just_preprocess=False):
 
     logger_handler = add_logging_file(log_file)
 
-    h5_postprocess_file = preprocess_and_save_all_data(data_root, res_folder, tomo_profile)
+    try:
+        h5_postprocess_file = preprocess_and_save_all_data(data_root, res_folder, tomo_profile)
 
-    if not just_preprocess:
-        h5_result_file = os.path.join(res_folder, 'result.hdf5')
-        make_tomo_reconstruction(h5_postprocess_file, h5_result_file)
-        save_amira(h5_result_file)
-        make_images(h5_result_file)
+        if not just_preprocess:
+            h5_result_file = os.path.join(res_folder, 'result.hdf5')
+            make_tomo_reconstruction(h5_postprocess_file, h5_result_file)
+            save_amira(h5_result_file)
+            make_images(h5_result_file)
+    except:
+        logging.info(traceback.format_exc())
+        raise
 
     logging.getLogger('').removeHandler(logger_handler)
 
