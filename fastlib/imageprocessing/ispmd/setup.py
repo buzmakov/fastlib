@@ -1,6 +1,7 @@
 from distutils.core import setup
 from distutils.extension import Extension
 from Cython.Distutils import build_ext
+import numpy as np
 
 setup(
     name = 'ispmd_image_processing',
@@ -12,5 +13,6 @@ setup(
                            "./C/objs/tasksys.o"],
             libraries=["stdc++",'m'])
     ],
-    cmdclass = {'build_ext': build_ext}
+    cmdclass = {'build_ext': build_ext},
+    include_dirs = [np.get_include()],
 )
